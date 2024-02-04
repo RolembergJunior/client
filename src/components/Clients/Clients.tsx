@@ -5,10 +5,12 @@ import { GET_CLIENTS } from "../../queries/clientsQuery"
 import ClientRow from '../../components/ClientRow/ClientRow';
 import Spinner from "../Spinner/Spinner";
 import Header from "../Header/Header";
+import Projects from "../Projects/Projects";
+import { ClientProps } from "@/utils/ClientType";
 
 export default function Clients(){
 
-    const {loading, error, data} = useQuery(GET_CLIENTS);
+    const {loading, error, data} = useQuery<ClientProps>(GET_CLIENTS);
 
 
     if(loading) return <Spinner/>
@@ -19,7 +21,8 @@ export default function Clients(){
             { !loading && !error && (
             <>
                 <Header/>
-                <table className="table table-auto mt-3">
+                <Projects/>
+                <table className="table w-[90%] mt-16 mx-auto">
                         <thead className="table-dark">
                             <tr>
                                 <th scope="col">Name</th>
@@ -29,8 +32,8 @@ export default function Clients(){
                             </tr>
                         </thead>
                         <tbody>
-                            {data.clients.map(clients => (
-                                <ClientRow key={clients.id} clients={clients}/>
+                            {data?.clients.map(client => (
+                                <ClientRow key={client.id} client={client}/>
                             ))}
                         </tbody>
                     </table>

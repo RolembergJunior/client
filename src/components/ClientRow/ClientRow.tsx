@@ -2,12 +2,17 @@ import { FaTrash } from "react-icons/fa";
 import { useMutation } from "@apollo/client";
 import { DELETE_CLIENTS } from '../../mutations/deleteClient';
 import { GET_CLIENTS } from "@/queries/clientsQuery";
+import { ClientProps } from "@/utils/ClientType";
 
-export default function ClientRow({ clients }){
+interface ClientTypes{
+    client: {name: string, email: string, phone: string, id:string}
+}
+
+export default function ClientRow({ client }:ClientTypes){
     const [deleteClient] = useMutation(DELETE_CLIENTS, {
-        variables: { id: clients.id },
+        variables: { id: client.id },
         update(cache, { data: { deleteClient } }) {
-            const { clients } = cache.readQuery({
+            const { clients }:ClientProps = cache.readQuery({
                 query: GET_CLIENTS});
                 cache.writeQuery({
                     query: GET_CLIENTS,
@@ -18,9 +23,9 @@ export default function ClientRow({ clients }){
 
     return(
         <tr>
-            <td>{ clients.name }</td>
-            <td>{ clients.email }</td>
-            <td>{ clients.phone }</td>
+            <td>{ client.name }</td>
+            <td>{ client.email }</td>
+            <td>{ client.phone }</td>
             <td>
                 <button onClick={deleteClient} className="btn btn-danger btn-sm">
                     <FaTrash/>

@@ -1,20 +1,25 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation } from "@apollo/client";
-import { FaPhone, FaUser } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
 import { GET_CLIENTS } from "@/queries/clientsQuery";
 import { ADD_CLIENT } from '@/mutations/addClient'
+import AddProjectModal from "../AddProjectModal/AddProjectModal";
+import { ClientProps } from "@/utils/ClientType";
+import { GoPlus } from "react-icons/go";
+import { IoMdClose } from "react-icons/io";
+import { FaPhone, FaUser } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
 
 
 export default function Header(){
-    const [isOpenModal, setIsOpenModal] = useState(true);
+    const [isOpenModal, setIsOpenModal] = useState(false);
+    const [isOpenModalAddProject, setIsOpenModalAddProject] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [addClient] = useMutation(ADD_CLIENT,{
         variables: { name, email, phone },
         update(cache, { data: { addClient } }) {
-            const { clients } = cache.readQuery({query: GET_CLIENTS });
+            const { clients }:ClientProps = cache.readQuery({query: GET_CLIENTS });
             cache.writeQuery({
                 query: GET_CLIENTS,
                 data: { clients: [...clients, addClient] }
@@ -22,13 +27,9 @@ export default function Header(){
         } 
     });
 
-    useEffect(() =>{
-    })
-
     function onHandleSubmit(e){
         e.preventDefault();
-        console.log(name, email,phone)
-        if(name === '' || email === '' || phone === ''){
+        if(!name || !email || !phone ){
             return alert('Por favor, preencha os campos')
         }
 
@@ -48,14 +49,21 @@ export default function Header(){
                     <div>Projeto Manager</div>
                 </a>
             </div>
-            <div className="flex items-center cursor-pointer" onClick={() => setIsOpenModal(true)}>
-                <FaUser className="icon" />
-                <p>Add clientes</p>
+            <div className="flex gap-2">
+                <div className="flex items-center btn btn-primary cursor-pointer" onClick={() => setIsOpenModal(true)}>
+                    <FaUser className="icon"/>
+                    <p>Add clientes</p>
+                </div>
+                <div className="flex items-center btn btn-primary cursor-pointer mr-4" onClick={() => setIsOpenModalAddProject(true)}>
+                    <GoPlus className="icon" />
+                    <p>Add Projects</p>
+                </div>
             </div>
             { isOpenModal ? 
                     <div className="absolute top-24 left-[25%] flex flex-col justify-center bg-slate-400 bg-opacity-70 w-[50%] h-[500px] rounded-lg z-10" >
-                        <h1 className="text-center text-2xl mt-14">PREENCHA OS DADOS DO CLIENTE</h1>
+                        <IoMdClose onClick={() => setIsOpenModal(false)} className="absolute top-2 left-[95%] text-center cursor-pointer" size={35}/>
                         <form className="m-auto" onSubmit={(e) => onHandleSubmit(e)}>
+                        <h1 className="text-center text-2xl mt-12">PREENCHA OS DADOS DO CLIENTE</h1>
                             <div className="flex flex-col mb-3">
                                 <FaUser/>
                                 <label htmlFor="InputName" className="form-label">Nome</label>
@@ -75,6 +83,7 @@ export default function Header(){
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>
                     </div> : null}
+            { isOpenModalAddProject ? <AddProjectModal modalIsOpen={isOpenModalAddProject} setModalIsOpen={setIsOpenModalAddProject} /> : null }
         </header>
     )
 }
