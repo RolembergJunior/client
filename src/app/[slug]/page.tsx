@@ -14,7 +14,7 @@ export default function ProjectsPage(){
             <Header/>
             <div className="mx-auto w-75 card p-5">
                 <Link href='/' className="btn btn-light btn-sm w-25 d-inline ms-auto">
-                    Back   
+                    Voltar   
                 </Link>
                 <div>
                     <ProjectData params={params.slug} />

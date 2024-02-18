@@ -1,8 +1,9 @@
 import { FaTrash } from "react-icons/fa";
 import { useMutation } from "@apollo/client";
-import { DELETE_CLIENTS } from '../../mutations/deleteClient';
+import { DELETE_CLIENTS } from '../../mutations/clientMutations';
 import { GET_CLIENTS } from "@/queries/clientsQuery";
-import { ClientProps } from "@/utils/ClientType";
+import { ClientProps } from "@/utils/Types";
+import { toast } from "sonner";
 
 interface ClientTypes{
     client: {name: string, email: string, phone: string, id:string}
@@ -16,10 +17,15 @@ export default function ClientRow({ client }:ClientTypes){
                 query: GET_CLIENTS});
                 cache.writeQuery({
                     query: GET_CLIENTS,
-                    data: { clients: clients.filter( client => client.id !== deleteClient.id )},
+                    data: { clients: clients?.filter( client => client.id !== deleteClient.id )},
                 });
         }
     });
+
+    function onHandleDeleteClient(){
+        deleteClient();
+        toast.success('Cliente excluído com sucesso');
+    }
 
     return(
         <tr>
@@ -27,7 +33,7 @@ export default function ClientRow({ client }:ClientTypes){
             <td>{ client.email }</td>
             <td>{ client.phone }</td>
             <td>
-                <button onClick={deleteClient} className="btn btn-danger btn-sm">
+                <button onClick={() => onHandleDeleteClient()} className="btn btn-danger btn-sm">
                     <FaTrash/>
                 </button>
             </td>

@@ -6,7 +6,7 @@ import ClientRow from '../../components/ClientRow/ClientRow';
 import Spinner from "../Spinner/Spinner";
 import Header from "../Header/Header";
 import Projects from "../Projects/Projects";
-import { ClientProps } from "@/utils/ClientType";
+import { ClientProps } from "@/utils/Types";
 
 export default function Clients(){
 
